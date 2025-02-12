@@ -1,67 +1,26 @@
-import { View, StyleSheet } from "react-native";
-import ImageViewer from "@/components/ImageViewer";
-import Button from "@/components/Button";
-import * as ImagePicker from "expo-image-picker";
-import { useState } from "react";
+import { View, Text, Pressable } from "react-native";
+import { Link, router } from "expo-router";
 
-const PlaceholderImage = require("@/assets/images/bg.png");
-
-export default function Index() {
-  const [selectedImage, setSelectedImage] = useState<string | undefined>(
-    undefined
-  );
-
-  const pickImageAsync = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      console.log(result);
-      setSelectedImage(result.assets[0].uri);
-    } else {
-      alert("You did not select any image.");
-    }
-  };
-
+export default function Home() {
   return (
-    <View style={styles.container}>
-      <View style={styles.imageContainer}>
-        <ImageViewer
-          imgSource={PlaceholderImage}
-          selectedImage={selectedImage}
-        />
-      </View>
-      <View style={styles.footerContainer}>
-        <Button
-          theme="primary"
-          label="Choose a photo"
-          onPress={pickImageAsync}
-        />
-        <Button label="Use this photo" />
-      </View>
+    <View>
+      <Text>Home Page</Text>
+      <Link href="/users/1">Go to user 1</Link>
+
+      <Pressable onPress={() => router.push("/users/2")}>
+        <Text>Go to user 2</Text>
+      </Pressable>
+
+      <Pressable
+        onPress={() =>
+          router.push({
+            pathname: "/users/[id]",
+            params: { id: 3 },
+          })
+        }
+      >
+        <Text>Go to user 3</Text>
+      </Pressable>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#25292e",
-    alignItems: "center",
-  },
-  imageContainer: {
-    flex: 1,
-  },
-  image: {
-    width: 320,
-    height: 440,
-    borderRadius: 18,
-  },
-  footerContainer: {
-    flex: 1 / 3,
-    alignItems: "center",
-  },
-});
