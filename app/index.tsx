@@ -7,11 +7,14 @@ import {
   ScrollView,
   Pressable,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
+import { router } from "expo-router";
+import CapturePhoto from "@/components/CapturePhoto";
 
 export default function Home() {
   const [images, setImages] = useState<string[]>([]);
+  const [captureImage, setCaptureImage] = useState(false);
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -29,13 +32,17 @@ export default function Home() {
     }
   };
 
+  if (captureImage) {
+    return <CapturePhoto setIsOpen={setCaptureImage} saveImage={setImages} />;
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.btnContainer}>
         <Pressable onPress={pickImage} style={styles.btn}>
           <Text style={{ color: "white" }}>Pick an Image</Text>
         </Pressable>
-        <Button title="Capture image" onPress={pickImage} />
+        <Button title="Capture image" onPress={() => setCaptureImage(true)} />
       </View>
       <ScrollView>
         {images.length === 0 && <Text>Please select some images</Text>}
