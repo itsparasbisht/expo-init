@@ -1,13 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-  Pressable,
-} from "react-native";
-import { CameraView, Camera } from "expo-camera";
+import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { CameraView, Camera, useCameraPermissions } from "expo-camera";
 import { router } from "expo-router";
 
 type CapturePhotoProps = {
@@ -19,20 +12,17 @@ export default function CapturePhoto({
   setIsOpen,
   saveImage,
 }: CapturePhotoProps) {
-  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
-  const [isCameraActive, setIsCameraActive] = useState(true);
+  const [isCameraActive, setIsCameraActive] = useState(false);
   const cameraRef = useRef<CameraView | null>(null);
 
-  // Request camera permissions on mount
-  useEffect(() => {
-    getCameraAccess();
-  }, []);
+  const [status, requestPermission] = useCameraPermissions();
 
-  async function getCameraAccess() {
-    const { status } = await Camera.requestCameraPermissionsAsync();
-    setHasPermission(status === "granted");
-  }
+  useEffect(() => {
+    if (status === "granted") {
+      setIsCameraActive(true);
+    }
+  }, [status]);
 
   const handleCapturePhoto = async () => {
     if (cameraRef.current) {
@@ -60,20 +50,20 @@ export default function CapturePhoto({
     }
   }
 
-  if (hasPermission === null) {
-    return (
-      <View style={styles.centered}>
-        <Text>Requesting camera permissions...</Text>
-      </View>
-    );
-  }
-  if (hasPermission === false) {
+  if (status !== "granted") {
     return (
       <View style={styles.centered}>
         <Text>No access to camera</Text>
-        <Pressable onPress={getCameraAccess}>
+        <TouchableOpacity style={styles.button} onPress={requestPermission}>
           <Text>Grant Camera Access</Text>
-        </Pressable>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setIsOpen(false)}
+        >
+          <Text style={styles.buttonText}>Cancel</Text>
+        </TouchableOpacity>
       </View>
     );
   }
