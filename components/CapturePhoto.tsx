@@ -17,9 +17,9 @@ export default function CapturePhoto({
   const cameraRef = useRef<CameraView | null>(null);
 
   const [status, requestPermission] = useCameraPermissions();
-
+  console.log(">>>o", status);
   useEffect(() => {
-    if (status === "granted") {
+    if (status?.status === "granted") {
       setIsCameraActive(true);
     }
   }, [status]);
@@ -50,7 +50,7 @@ export default function CapturePhoto({
     }
   }
 
-  if (status !== "granted") {
+  if (status?.status !== "granted") {
     return (
       <View style={styles.centered}>
         <Text>No access to camera</Text>

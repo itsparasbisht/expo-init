@@ -21,7 +21,12 @@
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "monochromeImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.parasbisht.expoinit"
     },
     "web": {
       "bundler": "metro",
@@ -56,6 +61,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "ff7f92ae-64d3-49a3-81d7-fd3334e0168b"
+      }
+    },
+    "owner": "parasbisht"
   }
 }
